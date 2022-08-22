@@ -580,6 +580,9 @@ function onPointerDown( event ) {
     
         onTouchDownLon = lon
         onTouchDownLat = lat
+
+        touch.x = (event.changedTouches[0].pageX / window.innerWidth) * 2 - 1;
+        touch.y = -(event.changedTouches[0].pageY / window.innerHeight) * 2 + 1;
     
     } else if(device == "desktop") {
         onPointerDownMouseX = event.clientX
