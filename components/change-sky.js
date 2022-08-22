@@ -47,23 +47,41 @@ function ChangeSky(targetSky) {
 }
 
 const MoveSky = (targetSky) => {
+
+    let currentTime = 1
+
     const loader = new THREE.CubeTextureLoader()
-
     loader.setPath( "./data/tiles/" + targetSky.id + "/" )
-    const textureCube = loader.load( [ 'px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg' ] )
+    const textureCube = loader.load( [ 'px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg' ], () => {
+        let time = 1500*currentTime
 
-    structure.material.uniforms.skybox2.value = textureCube
-    structure.material.uniforms.objPosition2.value = targetSky.position
+        structure.material.uniforms.skybox2.value = textureCube
+        structure.material.uniforms.objPosition2.value = targetSky.position
+
+        console.log(time)
+        const tween = new TWEEN.Tween({ opacity: 1 })
+        .to({ opacity: 0 }, time)
+        .onUpdate((coords) => {
+            if(isChangingSky) {
+                structure.material.uniforms.alpha1.value = coords.opacity
+                structure.material.uniforms.alpha2.value = 1 - coords.opacity
+            }
+        })
+        .easing(TWEEN.Easing.Quadratic.InOut)
+        .onComplete(() => {
+        })
+        tween.start()
+    })
 
     const tween = new TWEEN.Tween({ 
         x: camera.position.x, 
         z: camera.position.z,
-        opacity: 1})
+        currentTime: 1})
     .onStart( () => {
         sky.visible = false
         isChangingSky = true
-
         loadedTiles = []
+        structure.material.uniforms.alpha1.value = 1
 
         currentSky = targetSky
         loadLowQualityTiles()
@@ -71,16 +89,16 @@ const MoveSky = (targetSky) => {
     .to({ 
         x: targetSky.position.x, 
         z: targetSky.position.z,
-        opacity: 0}, 1500)
+        currentTime: 0}, 1500)
     .onUpdate((coords) => {
         camera.position.x = coords.x
         camera.position.z = coords.z
-
-        structure.material.uniforms.alpha1.value = coords.opacity
-        structure.material.uniforms.alpha2.value = 1 - coords.opacity
+        currentTime = coords.currentTime
     })
     .easing(TWEEN.Easing.Quadratic.InOut)
     .onComplete(() => {
+        isChangingSky = false
+
         structure.material.uniforms.skybox.value = textureCube
         structure.material.uniforms.alpha1.value = 0
         structure.material.uniforms.objPosition1.value = targetSky.position
@@ -89,8 +107,6 @@ const MoveSky = (targetSky) => {
         sky.position.set(targetSky.position.x, targetSky.position.y, targetSky.position.z)
         sky.visible = true
         LoadTiles()
-
-        isChangingSky = false
     })
     tween.start()
 }
