@@ -1,0 +1,63 @@
+{
+    "skySpots": [
+        {
+            "id": "casa1",
+            "position": {
+                "x": 0,
+                "y": 1.600000023841858,
+                "z": 0
+            },
+            "current": true
+        },
+        {   
+            "id": "casa2",
+            "position": {
+                "x": 0.10621027648448944,
+                "y": 1.600000023841858,
+                "z": -3.5040228366851807
+            },
+            "current": false
+        },
+        {
+            "id": "casa3",
+            "position": {
+                "x": 6.357,
+                "y": 1.600000023841858,
+                "z": -6.51356
+            },
+            "current": false
+        },
+        {
+            "id": "casa4",
+            "position": {
+                "x": 8.148567199707031,
+                "y": 1.600000023841858,
+                "z": -3.180062770843506
+            },
+            "current": false
+        }
+    ],
+    "hotSpots": [
+        {
+            "id": "hotSpot-1659017117951",
+            "title": "Estela de la Almudena",
+            "description": "Es una obra cincelada en plata, realizada por el orfebre Manuel Carrera y su equipo.",
+            "image": "",
+            "position": {
+                "x": -8.67667878512541,
+                "y": 0.8106712589729905,
+                "z": -60.670616896168426
+            },
+            "startPosition": {
+                "x": -8.67667878512541,
+                "y": 0,
+                "z": -60.670616896168426
+            },
+            "endPosition": {
+                "x": -8.67667878512541,
+                "y": 0.7106712589729905,
+                "z": -60.670616896168426
+            }
+        }
+    ]
+}
