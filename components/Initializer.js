@@ -366,7 +366,9 @@
 const Init = async () => {
     const results = await fetch("./data/data.json")
     const data = await results.json()
-    InitCode(data)
+    document.readyState !== 'loading'
+        ? InitCode(data)
+        : document.addEventListener('DOMContentLoaded', InitCode(data))
 }
 
 Init()
