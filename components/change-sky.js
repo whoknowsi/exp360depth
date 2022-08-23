@@ -1,4 +1,5 @@
 let allSkies
+let changeSkyAnimationTime = 1500
 
 AFRAME.registerComponent('change-sky', {
     schema: {
@@ -53,12 +54,12 @@ const MoveSky = (targetSky) => {
     const loader = new THREE.CubeTextureLoader()
     loader.setPath( "./data/tiles/" + targetSky.id + "/" )
     const textureCube = loader.load( [ 'px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg' ], () => {
-        let time = 1500*currentTime
+        let time = changeSkyAnimationTime*currentTime
 
         structure.material.uniforms.skybox2.value = textureCube
         structure.material.uniforms.objPosition2.value = targetSky.position
 
-        console.log(time)
+        console.log("Time for loading cube texture: " + (changeSkyAnimationTime - time))
         const tween = new TWEEN.Tween({ opacity: 1 })
         .to({ opacity: 0 }, time)
         .onUpdate((coords) => {
@@ -89,7 +90,7 @@ const MoveSky = (targetSky) => {
     .to({ 
         x: targetSky.position.x, 
         z: targetSky.position.z,
-        currentTime: 0}, 1500)
+        currentTime: 0}, changeSkyAnimationTime)
     .onUpdate((coords) => {
         camera.position.x = coords.x
         camera.position.z = coords.z

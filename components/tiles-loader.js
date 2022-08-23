@@ -8,11 +8,11 @@ const LoadTiles = () => {
             if (hasToBeRenderer) {
                 let imgSrc
 
-                if (currentFov >= 60) {
+                if (camera.fov >= 60) {
                     imgSrc = "./data/tiles/tiles/1k-" + currentSky.id + "-" + imagesName[i] + "-" + k + ".jpg"
-                } else if (currentFov < 60 && currentFov >= 40) {
+                } else if (camera.fov < 60 && camera.fov >= 40) {
                     imgSrc = "./data/tiles/tiles/2k-" + currentSky.id + "-" + imagesName[i] + "-" + k + ".jpg"
-                } else if(currentFov < 40) {
+                } else if(camera.fov < 40) {
                     imgSrc = "./data/tiles/tiles/4k-" + currentSky.id + "-" + imagesName[i] + "-" + k + ".jpg"
                 } 
 

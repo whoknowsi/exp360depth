@@ -3,6 +3,7 @@ let structure, sky, cursor
 let loading = true
 let raycaster = new THREE.Raycaster()
 
+
 let isChangingSky = false
 let isUserInteracting = false,
 				onPointerDownMouseX = 0, onPointerDownMouseY = 0,
@@ -12,6 +13,7 @@ let isUserInteracting = false,
 				phi = 0, theta = 0;
 
 let minFov = 30, maxFov = 130
+let zoomingOnMobile = false
 
 const touch = new THREE.Vector2()
 const pointer = new THREE.Vector2()

@@ -1,6 +1,5 @@
 let startPoints
 let prevFov
-
 AFRAME.registerComponent('camera-zoom', {
     schema: {
         min: { type: "number", default: 30 },
@@ -11,18 +10,6 @@ AFRAME.registerComponent('camera-zoom', {
         let sceneEl = document.querySelector("a-scene")
         self.camera = sceneEl.querySelector("a-camera")
         
-        document.querySelector("canvas").addEventListener("wheel", event => {
-            if(IsMoving()) { return }
-            zooming = true
-            let amount = Math.sign(event.deltaY) * 5
-            
-            currentFov = Number(self.camera.getAttribute('camera').fov)
-            let adjust = amount + currentFov
-            if (adjust < self.data.min) { adjust = self.data.min }
-            if (adjust > self.data.max) { adjust = self.data.max }
-
-            self.camera.setAttribute('camera', 'fov', adjust)
-        })
 
         document.querySelector(".a-canvas").addEventListener("touchstart", (evt) => {
             if (evt.touches.length === 2) {
@@ -43,23 +30,23 @@ AFRAME.registerComponent('camera-zoom', {
     }
 })
 
-const pinchStart = (evt, fov) => {
-    prevFov = fov
+const pinchStart = (evt) => {
+    zoomingOnMobile = true
+    prevFov = camera.fov
     startPoints = Math.hypot(
         evt.touches[0].pageX - evt.touches[1].pageX,
         evt.touches[0].pageY - evt.touches[1].pageY)
 }
 
-const pinchMove = (evt, min, max, camera) => {
-    if(IsMoving()) { return }
-    zooming = true
-
-    var dist = Math.hypot(
+const pinchMove = (evt) => {
+    let dist = Math.hypot(
         evt.touches[0].pageX - evt.touches[1].pageX,
         evt.touches[0].pageY - evt.touches[1].pageY)
 
-    let currentFovNormalized = MapInterval(prevFov, min, max, evt.target.scrollWidth - startPoints, 0 - startPoints)
-    let normalized = MapInterval(currentFovNormalized + dist - startPoints, 0 - startPoints, evt.target.scrollWidth - startPoints, max, min)
+    let currentFovNormalized = MapInterval(prevFov, minFov, maxFov, evt.target.scrollWidth - startPoints, 0 - startPoints)
+    let normalized = MapInterval(currentFovNormalized + dist - startPoints, 0 - startPoints, evt.target.scrollWidth - startPoints, maxFov, minFov)
     currentFov = normalized
-    camera.setAttribute('camera', 'fov', normalized)
+    camera.fov = normalized
+    camera.updateProjectionMatrix()
+    LoadTiles()
 }

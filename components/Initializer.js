@@ -532,11 +532,13 @@ function CreateSkySpot(data) {
 function addEvents() {
 
     if(device == "mobile" || device == "tablet") {
-        document.body.addEventListener('touchstart', onPointerDown)
+        document.addEventListener('touchstart', onPointerDown)
         document.addEventListener('touchmove', onPointerMove)
+        document.addEventListener('touchend', onPointerUp)
     } else if(device == "desktop") {
         document.addEventListener('pointermove', onPointerMove)
-        document.body.addEventListener('pointerdown', onPointerDown)
+        document.addEventListener('pointerdown', onPointerDown)
+        document.addEventListener('pointerup', onPointerUp)
         document.addEventListener('dragover', (event) => {
             event.preventDefault()
             event.dataTransfer.dropEffect = 'copy'
@@ -557,13 +559,12 @@ function addEvents() {
     document.body.addEventListener("wheel", event => {
         let amount = Math.sign(event.deltaY) * 5
         
-        currentFov = Number(camera.fov)
-        let adjust = amount + currentFov
+        let adjust = amount + camera.fov
         if (adjust < minFov) { adjust = minFov }
         if (adjust > maxFov) { adjust = maxFov }
         camera.fov = adjust
         camera.updateProjectionMatrix()
-        
+        console.log("here")
         LoadTiles()
     })
     
@@ -575,15 +576,22 @@ function onPointerDown( event ) {
     isUserInteracting = true
 
     if(device == "mobile" || device == "tablet") {
+
+        
+        touch.x = (event.changedTouches[0].pageX / window.innerWidth) * 2 - 1;
+        touch.y = -(event.changedTouches[0].pageY / window.innerHeight) * 2 + 1; 
+
+        if (event.touches.length === 2) {
+            pinchStart(event)
+            return
+        }
+
         onTouchDownMouseX = event.changedTouches[0].clientX
         onTouchDownMouseY = event.changedTouches[0].clientY
     
         onTouchDownLon = lon
         onTouchDownLat = lat
 
-        touch.x = (event.changedTouches[0].pageX / window.innerWidth) * 2 - 1;
-        touch.y = -(event.changedTouches[0].pageY / window.innerHeight) * 2 + 1;
-    
     } else if(device == "desktop") {
         onPointerDownMouseX = event.clientX
         onPointerDownMouseY = event.clientY
@@ -596,14 +604,12 @@ function onPointerDown( event ) {
         x: lon,
         y: lat
     }
-
-    document.addEventListener('pointerup', onPointerUp)
-    document.addEventListener('touchend', onPointerUp)
 }
 
 function onPointerMove(event) {
 
-
+    let rotationSpeed = camera.fov/800
+    
     if(device == "desktop") {
         pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
         pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
@@ -615,35 +621,54 @@ function onPointerMove(event) {
 
         if ( event.isPrimary === false || !isUserInteracting) return
 
-        lon = ( onPointerDownMouseX - event.clientX ) * 0.1 + onPointerDownLon
-        lat = ( event.clientY - onPointerDownMouseY ) * 0.1 + onPointerDownLat
+        lon = ( onPointerDownMouseX - event.clientX ) * rotationSpeed + onPointerDownLon
+        lat = ( event.clientY - onPointerDownMouseY ) * rotationSpeed + onPointerDownLat
 
+        console.log(lon)
+        console.log(lat)
         LoadTiles()
 
     } else if(device == "mobile" || device == "tablet") {
+
         touch.x = (event.changedTouches[0].pageX / window.innerWidth) * 2 - 1;
         touch.y = -(event.changedTouches[0].pageY / window.innerHeight) * 2 + 1;
 
+        if (event.touches.length === 2) {
+            pinchMove(event)
+            return
+        }
+        
         if ( event.isPrimary === false || !isUserInteracting) return
-        lon = ( onTouchDownMouseX - event.touches[0].clientX ) * 0.1 + onTouchDownLon
-        lat = ( event.touches[0].clientY - onTouchDownMouseY ) * 0.1 + onTouchDownLat
+        lon = ( onTouchDownMouseX - event.touches[0].clientX ) * rotationSpeed + onTouchDownLon
+        lat = ( event.touches[0].clientY - onTouchDownMouseY ) * rotationSpeed + onTouchDownLat
 
         LoadTiles()
     }
 }
 
 function onPointerUp(event) {
-    if ( event.isPrimary === false ) return
-
     isUserInteracting = false
+
+    if(event.isPrimary === false) return
+
+    if((device == "mobile" || device == "tablet")) {
+        console.log(event)
+        let finishZoomig = event.touches.length === 0
+        
+        if(zoomingOnMobile && finishZoomig) {
+            zoomingOnMobile = false
+            console.log("termiando de hacer zoom")
+            return
+        } 
+        if(zoomingOnMobile) {
+            return
+        }
+    }
 
     let userClick = CheckIfUserClick()
     if (userClick) {
         HandleRaycasterIntersection()
     }
-
-    document.removeEventListener('pointerup', onPointerUp)
-    document.removeEventListener('touchend', onPointerUp)
 }
 
 function CheckIfUserClick() {
