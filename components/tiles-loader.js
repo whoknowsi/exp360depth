@@ -1,4 +1,5 @@
 const LoadTiles = () => {
+    console.log("loading tiles")
     for (let i = 0; i < sky.children.length; i++) {
         const side = sky.children[i];
         for (let k = 0; k < side.children.length; k++) {
@@ -39,6 +40,7 @@ const LoadTiles = () => {
 
 function loadLowQualityTiles() {
 
+    console.log("loading low quality tiles")
     for (let i = 0; i < sky.children.length; i++) {
         const side = sky.children[i];
         for (let k = 0; k < side.children.length; k++) {

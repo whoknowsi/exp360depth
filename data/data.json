@@ -40,23 +40,34 @@
     "hotSpots": [
         {
             "id": "hotSpot-1659017117951",
-            "title": "Estela de la Almudena",
-            "description": "Es una obra cincelada en plata, realizada por el orfebre Manuel Carrera y su equipo.",
-            "image": "",
-            "position": {
-                "x": -8.67667878512541,
-                "y": 0.8106712589729905,
-                "z": -60.670616896168426
-            },
+            "title": "Tele",
+            "description": "Lorem ipsum dolor sit amet. consectetur adipiscing elit. Mauris dignissim libero sit amet",
+            "image": "tele.jpg",
             "startPosition": {
-                "x": -8.67667878512541,
-                "y": 0,
-                "z": -60.670616896168426
+                "x": -4.170442581176758,
+                "y": 2.4364428527596695,
+                "z": -1.5128739361704724
             },
             "endPosition": {
-                "x": -8.67667878512541,
-                "y": 0.7106712589729905,
-                "z": -60.670616896168426
+                "x": -2.570442581176758,
+                "y": 2.4364428527596695,
+                "z": -1.5128739361704724
+            }
+        },
+        {
+            "id": "hotSpot-1659017117952",
+            "title": "Cama",
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris dignissim libero sit amet ligula commodo dapibus. Aenean tempor orci dolor, vitae vulputate eros euismod eget. Mauris auctor diam sed odio venenatis, a tempus massa lacinia. Phasellus vitae neque molestie, ultricies tortor non, dignissim nulla. Etiam luctus purus quis metus cursus volutpat. Nam gravida, velit eget auctor pharetra, turpis nibh congue ipsum, non elementum augue lorem fermentum libero. Pellentesque eu pulvinar risus.",
+            "image": "",
+            "startPosition": {
+                "x": 6.792567944607314,
+                "y": 0.7633706331253052,
+                "z": -0.4744315081099151
+            },
+            "endPosition": {
+                "x": 6.792567944607314,
+                "y": 1.3633706331253052,
+                "z": -0.4744315081099151
             }
         }
     ]

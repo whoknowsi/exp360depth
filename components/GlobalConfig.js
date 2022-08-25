@@ -1,9 +1,9 @@
 let camera, scene, renderer
-let structure, sky, cursor
+let structure, sky, cursor, hotSpots, skySpots
 let loading = true
 let raycaster = new THREE.Raycaster()
-
-
+let time = 0, cameraRotation, deltaTime, deltaRotation = {lon: 0, lat: 0}, cameraIntertiaTween
+let isUserZooming = false, isCameraMovingByIntertia = false, isUserOverModal = false
 let isChangingSky = false
 let isUserInteracting = false,
 				onPointerDownMouseX = 0, onPointerDownMouseY = 0,
@@ -25,7 +25,6 @@ let zooming = false
 let currentSky
 let firstRender = false
 let currentFov = 80
-const skySpots = []
 const hotSpotsObj3D = []
 let scaling = false
 const tilesSky1 = []

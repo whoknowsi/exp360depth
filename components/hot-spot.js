@@ -56,9 +56,9 @@ let handleLeaveHotspot = () => {
     if(!hotSpotIsClicked) { HidePanelInfo() }
 }
 
-let handleClick = (intersectionObj) => {
+let handleClick = (intersectedObj) => {
 
-    let thereIsHotspotIntersection = (intersectionObj != null && intersectionObj.type == "hotSpot")
+    let thereIsHotspotIntersection = (intersectedObj != null && intersectedObj.type == "hotSpot")
     if (!thereIsHotspotIntersection) { 
         hotSpotIsClicked = false
         HidePanelInfo()
@@ -67,14 +67,7 @@ let handleClick = (intersectionObj) => {
 
     hotSpotIsClicked = true
 
-
-    let hotspotIntersection = intersectionObj.intersection
-    let data = hotspotIntersection.object.el.components["hot-spot"].data
-    let title = data.title
-    let description = data.description
-    let image = data.image
-
-    ShowPanelInfo(hotspotIntersection, title, description, image)
+    ShowPanelInfo(intersectedObj.intersection)
 }
 
 let FaceHotspotToCamera = (hotspot) => {
@@ -93,20 +86,41 @@ let fov = {
 let relativeAngle = 0
 let structureContainerPosition
 
-function ShowPanelInfo(intersection, title, description, image) {
+function ShowPanelInfo(intersection) {
 
+    if(currentShowedHotSpot) {
+        if(intersection.userData == currentShowedHotSpot.userData) {
+            return 
+        }
+    }
+    
+    let title = intersection.userData.title
+    let description = intersection.userData.description
+    let image = intersection.userData.image
     let existPanel = document.querySelector(".infoPanel")
     if(existPanel != null) existPanel.remove()
-    CreatePanel(title, description, image, intersection.object)
+    CreatePanel(title, description, image, intersection)
 
 }
 
 function CreatePanel(title, description, image, target) {
     panel != null && panel.remove()
 
+    hotSpotIsClicked = false
+
     panel = document.createElement("div")
+    panel.addEventListener("mouseenter", () => {
+        isUserOverModal = true
+    })
+    panel.addEventListener("mouseleave", () => {
+        isUserOverModal = false
+    })
     panel.setAttribute("class", "hotSpotPanel")
     
+
+    // let containerContaienr = document.createElement("div")
+    
+
     let container = document.createElement("div")
     container.classList.add("hotSpotContainer")
 
@@ -123,10 +137,15 @@ function CreatePanel(title, description, image, target) {
     }
 
     let containsImage = (image != "" && image != undefined)
+    let imageEl
     if(containsImage) {
-        let imageEl = document.createElement("img")
+        imageEl = document.createElement("img")
         imageEl.classList.add("ImgHotSpot")
-        imageEl.src = "./img/hotspots/" + image
+        imageEl.onload = () => {
+            let hasOverflowHeight = container.clientHeight < container.scrollHeight
+            if(hasOverflowHeight && !container.classList.contains("overflow")) { container.classList.add("overflow") }
+        }
+        imageEl.src = "./data/img/hotspots/" + image
         container.appendChild(imageEl)
     }
 
@@ -138,7 +157,8 @@ function CreatePanel(title, description, image, target) {
         container.appendChild(descriptionEl)
     }
 
-    container.addEventListener('scroll', () => {
+    container.addEventListener('scroll', (event) => {
+
         if(!container.classList.contains("overflow")) {
             let hasOverflowHeight = container.clientHeight < container.scrollHeight
             if(hasOverflowHeight) {
@@ -162,14 +182,13 @@ function CreatePanel(title, description, image, target) {
 
     panel.appendChild(container)
     document.body.appendChild(panel)
+
     currentShowedHotSpot = target
+
     let hasOverflowHeight = container.clientHeight < container.scrollHeight
-    if(hasOverflowHeight) {
-        container.classList.add("overflow")
-    }
+    if(hasOverflowHeight) { container.classList.add("overflow") }
+
     MovePanel(target)
-    container.scroll(0, 1)
-    container.scroll(0, 0)
 }
 
 var MovePanel = function(target) {
@@ -185,7 +204,6 @@ function HidePanelInfo() {
 
 function toScreenPosition(obj)
 {
-    let camera = document.querySelector("a-camera").components.camera.camera
     var vector = new THREE.Vector3()
 
     var widthHalf = 0.5*window.innerWidth

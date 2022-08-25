@@ -39,6 +39,7 @@ AFRAME.registerComponent('raycaster-element', {
 
 
 function CursorManagment(intersection) {
+
     let normal = intersection.face.normal;
 
     // let cameraRotationHorizontal = NormalizeAngleInRadians(document.querySelector("#cameraContainer").getAttribute("rotation").y)
@@ -55,17 +56,17 @@ function CursorManagment(intersection) {
 
 
 const HandleRaycasterIntersection = () => {
-    let intersectionObj = GetIntersection()
-    MoveToNextSky(intersectionObj)
-    handleClick(intersectionObj)
+    let intersectedObject = GetIntersection()
+
+    MoveToNextSky(intersectedObject)
+    handleClick(intersectedObject)
 }
 
 const GetIntersection = () => {
     UpdateRaycaster()
 
     let structureIntersections = raycaster.intersectObject(structure)
-    let hotSpotIntersections = []//raycaster.intersectObjects(hotSpotsObj3D)
-    let hotSpotIntersection 
+    let hotSpotIntersections = raycaster.intersectObjects(hotSpots.children)
 
     if(hotSpotIntersections.length == 0 && structureIntersections.length == 0) { return null }
     else if (hotSpotIntersections.length == 0) {
@@ -75,16 +76,13 @@ const GetIntersection = () => {
         }
     }
     else if(structureIntersections.length == 0) {
-        for (let i = 0; i < hotSpotIntersections.length; i++) {
-            const hotSpotComponent = hotSpotIntersections[i];
-            if(hotSpotComponent.object.el.children.length != 0) { 
-                hotSpotIntersection = hotSpotComponent
-                break
+        const hotSpotIntersection = hotSpotIntersections[0].object.parent;
+
+        if(hotSpotIntersection) { 
+            return {
+                type: "hotSpot",
+                intersection: hotSpotIntersection
             }
-        }
-        return {
-            type: "hotSpot",
-            intersection: hotSpotIntersection
         }
     }
     else if(structureIntersections[0].distance < hotSpotIntersections[0].distance) {
@@ -94,16 +92,13 @@ const GetIntersection = () => {
         }
     }
     else if(structureIntersections[0].distance > hotSpotIntersections[0].distance) {
-        for (let i = 0; i < hotSpotIntersections.length; i++) {
-            const hotSpotComponent = hotSpotIntersections[i];
-            if(hotSpotComponent.object.el.children.length != 0) { 
-                hotSpotIntersection = hotSpotComponent
-                break
+        const hotSpotIntersection = hotSpotIntersections[0].object.parent;
+
+        if(hotSpotIntersection) { 
+            return {
+                type: "hotSpot",
+                intersection: hotSpotIntersection
             }
-        }
-        return {
-            type: "hotSpot",
-            intersection: hotSpotIntersection
         }
     }
     
@@ -122,7 +117,9 @@ const GetClosetsSkyIntersectionPoint = (intersection) => {
     let closestSkySpotDistance = 100000
     let closetsSkySpot
 
-    skySpots.forEach(skySpot => {
+    for (let i = 0; i < skySpots.children.length; i++) {
+        const skySpot = skySpots.children[i]
+
         let skyWorldPosition = new THREE.Vector3()
         skySpot.getWorldPosition(skyWorldPosition)
         let distanceBetweenIntersectionAndSkySpot = intersection.point.distanceTo(skyWorldPosition)
@@ -130,7 +127,8 @@ const GetClosetsSkyIntersectionPoint = (intersection) => {
             closestSkySpotDistance = distanceBetweenIntersectionAndSkySpot
             closetsSkySpot = skySpot
         }
-    })
+        
+    }
 
     return closetsSkySpot
 }   

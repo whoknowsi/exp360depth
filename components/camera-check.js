@@ -1,7 +1,6 @@
 let cameraDraggin, cameraAnimating
 let widthRangeFromMinusOneToOne, heightRangeFromMinusOneToOne
 let startPoint, prevRotationContainer, newRotationContainer
-let time, rotation, deltaRotation, deltaTime
 let cameraContainer 
 let myTimeOut
 
